@@ -14,10 +14,11 @@ router.post('/addCompany', async (req, res) => {
     }
 });
 
-//one to one relationship
+//one to one relationship 
 // router.post('/addMobile', async (req, res) => {
 //     try {
 //         const { model, year, _5g, color, company } = req.body;
+
 //         // search for company inside the database
 //         const isCompany = await Company.findOne({ name: company });
 //         if (!isCompany) {
@@ -34,23 +35,59 @@ router.post('/addCompany', async (req, res) => {
 // });
 
 //one to many
-router.post('/addMobile', async (req, res) => {
+// router.post('/addMobile', async (req, res) => {
+//     try {
+//         const { model, year, _5g, color, company } = req.body;
+//         // search for company inside the database
+//         const isCompany = await Company.findOne({ name: company });
+//         if (!isCompany) {
+//             res.status(403).json({ Error: 'add the company first' });
+//         }
+//         // now embed in the new document 
+//         const newMobile = new Mobile({ model, year, _5g, color });
+//         isCompany.mobiles.push(newMobile);
+//         await isCompany.save();
+//         res.status(200).json(isCompany);
+
+//     } catch (error) {
+//         throw error;
+//     }
+// });
+
+//reference
+router.post("/addMobile", async (req, res) => {
     try {
         const { model, year, _5g, color, company } = req.body;
-        // search for company inside the database
         const isCompany = await Company.findOne({ name: company });
         if (!isCompany) {
-            res.status(403).json({ Error: 'add the company first' });
+            res.status(403).json({
+                error: "Add the company first",
+            });
         }
-        // now embed in the new document 
-        const newMobile = new Mobile({ model, year, _5g, color });
-        isCompany.mobiles.push(newMobile);
-        await isCompany.save();
-        res.status(200).json(isCompany);
-
+        const newMobile = new Mobile({
+            model,
+            year,
+            _5g,
+            color,
+            company: isCompany._id,
+        });
+        await newMobile.save();
+        res.status(200).json(newMobile);
     } catch (error) {
-        throw error;
+        res.json(error);
     }
 });
 
+router.get('/mobile/:model', async (req, res) => {
+    try {
+        const { model } = req.params;
+        const mobile = await Mobile.findOne({ model }).populate("company");
+        if (!mobile) {
+            res.send("Mobile doesn't exist");
+        }
+        res.status(200).json(mobile);
+    } catch (error) {
+        res.json(error);
+    }
+});
 module.exports = router;

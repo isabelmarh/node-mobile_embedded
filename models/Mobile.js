@@ -24,6 +24,13 @@ const mobileSchema = new Schema({
     //     type: Object,
     // }
     //delete when one to many rel 
+
+    //reference type
+    company: {
+        type: Schema.Types.ObjectId,
+        required: true,
+        ref: "Company",
+    },
 });
 
 module.exports = mongoose.model('Mobile', mobileSchema);

@@ -16,10 +16,10 @@ const companySchema = new Schema({
         required: true,
     },
     //one to many relationship
-    mobiles: {
-        type: Array,
-        default: [],
-    },
+    // mobiles: {
+    //     type: Array,
+    //     default: [],
+    // },
 });
 
 module.exports = mongoose.model('Company', companySchema);
