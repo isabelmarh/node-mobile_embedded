@@ -1,6 +1,6 @@
 const express = require('express');
 const Company = require('../models/Company');
-const Car = require('../models/Car');
+const Model = require('../models/Model');
 const router = express.Router();
 
 router.post('/addco', async (req, res) => {
