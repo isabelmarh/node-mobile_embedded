@@ -1,32 +1,52 @@
 const express = require('express');
-const Company = require('../models/Company');
-const Model = require('../models/Model');
 const router = express.Router();
+const Company = require('../models/Company');
+const Mobile = require('../models/Mobile');
 
-router.post('/addco', async (req, res) => {
+router.post('/addCompany', async (req, res) => {
     try {
-        const { name, model } = req.body;
-        const docToSave = new Company({ name, model });
-        const ret = await docToSave.save();
-        res.status(200).json({ ret });
-        return;
-
+        const { name, estd, country } = req.body;
+        const company = new Company({ name, estd, country });
+        await company.save();
+        res.status(200).json(company);
     } catch (error) {
-        throw error;
+        res.status(400).json(error);
     }
 });
 
-router.post('/addmod', async (req, res) => {
+//one to one relationship
+// router.post('/addMobile', async (req, res) => {
+//     try {
+//         const { model, year, _5g, color, company } = req.body;
+//         // search for company inside the database
+//         const isCompany = await Company.findOne({ name: company });
+//         if (!isCompany) {
+//             res.status(403).json({ Error: 'add the company first' });
+//         }
+//         // now embed in the new document 
+//         const newMobile = new Mobile({ model, year, _5g, color, company: isCompany });
+//         await newMobile.save();
+//         res.status(200).json(newMobile);
+
+//     } catch (error) {
+//         throw error;
+//     }
+// });
+
+//one to many
+router.post('/addMobile', async (req, res) => {
     try {
-        const { name, company } = req.body;
-        const co = await Company.findOne({ name: company });
-        if (!co) {
-            res.status(403).json({ Company: 'does not exist' });
+        const { model, year, _5g, color, company } = req.body;
+        // search for company inside the database
+        const isCompany = await Company.findOne({ name: company });
+        if (!isCompany) {
+            res.status(403).json({ Error: 'add the company first' });
         }
-        let model = new Model({ name, company });
-        co.models.push(model);
-        const updatedCoArr = await co.save();
-        res.status(200).json(updatedCoArr);
+        // now embed in the new document 
+        const newMobile = new Mobile({ model, year, _5g, color });
+        isCompany.mobiles.push(newMobile);
+        await isCompany.save();
+        res.status(200).json(isCompany);
 
     } catch (error) {
         throw error;

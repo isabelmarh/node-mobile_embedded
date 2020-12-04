@@ -1,4 +1,4 @@
-const db = require('./db');
+const db = require('./config/db');
 const inventoryRouter = require('./routes/inventory.route');
 db();
 
