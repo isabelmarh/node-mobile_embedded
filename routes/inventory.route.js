@@ -5,8 +5,8 @@ const router = express.Router();
 
 router.post('/addco', async (req, res) => {
     try {
-        const { name } = req.body;
-        const docToSave = new Company({ name });
+        const { name, model } = req.body;
+        const docToSave = new Company({ name, model });
         const ret = await docToSave.save();
         res.status(200).json({ ret });
         return;
@@ -23,8 +23,8 @@ router.post('/addmod', async (req, res) => {
         if (!co) {
             res.status(403).json({ Company: 'does not exist' });
         }
-        let mobile = new Mobile({ name, company });
-        co.mobile.push(mobile);
+        let model = new Model({ name, company });
+        co.models.push(model);
         const updatedCoArr = await co.save();
         res.status(200).json(updatedCoArr);
 

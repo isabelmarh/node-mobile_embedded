@@ -7,7 +7,7 @@ const company = new Schema({
         type: String,
         required: true,
     },
-    mobile: {
+    model: {
         type: Array,
     }
 });
